@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Exercise Daily Tracker</title>
+<style>
+  body {
+    background: #fef6e4;
+    font-family: "Nunito", sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .card {
+    position: relative;
+    background: #fff8dc;
+    border: 3px solid #8b4513;
+    border-radius: 16px;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 4px 0 #8b4513;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    overflow: hidden;
+  }
+
+  /* Smooth bottom-to-top fill */
+  .fill-bg {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 0%;
+    background: #8b4513;
+    opacity: 0.15;
+    transition: height 0.6s ease;
+    pointer-events: none;
+  }
+
+  /* Pop animation */
+  .card.pop {
+    transform: scale(1.05);
+    box-shadow: 0 6px 0 #8b4513;
+  }
+
+  .icon {
+    font-size: 36px;
+    color: #facc15;
+  }
+
+  .text {
+    flex: 1;
+  }
+
+  .count {
+    font-weight: 800;
+    font-size: 24px;
+    color: #5c3a1e;
+  }
+
+  .label {
+    font-weight: 700;
+    color: #5c3a1e;
+  }
+
+  .buttons {
+    display: flex;
+    gap: 8px;
+    position: relative;
+  }
+
+  button {
+    background: #facc15;
+    border: 2px solid #8b4513;
+    border-radius: 8px;
+    width: 32px;
+    height: 32px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #5c3a1e;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.1s ease;
+  }
+
+  button:active {
+    transform: scale(0.9);
+  }
+
+  /* Floating +1 */
+  .float {
+    position: absolute;
+    font-weight: 800;
+    color: #5c3a1e;
+    font-size: 20px;
+    animation: rise 0.8s ease forwards;
+    pointer-events: none;
+  }
+
+  @keyframes rise {
+    0% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-40px); }
+  }
+</style>
+</head>
+<body>
+
+  <div class="card" id="card">
+    <div class="fill-bg" id="fillBg"></div>
+
+    <div class="icon">💪</div>
+
+    <div class="text">
+      <div class="count" id="count">0/1</div>
+      <div class="label">Exercise daily</div>
+    </div>
+
+    <div class="buttons">
+      <button id="minus">−</button>
+      <button id="plus">+</button>
+    </div>
+  </div>
+
+<script>
+  const card = document.getElementById("card");
+  const countEl = document.getElementById("count");
+  const plus = document.getElementById("plus");
+  const minus = document.getElementById("minus");
+  const fillBg = document.getElementById("fillBg");
+
+  let done = false;
+
+  /* Restore state from localStorage */
+  function loadState() {
+    const saved = localStorage.getItem("workoutDone");
+    const savedDate = localStorage.getItem("workoutDate");
+
+    const today = new Date().toDateString();
+
+    if (savedDate !== today) {
+      // New day → reset
+      done = false;
+      saveState();
+    } else {
+      done = saved === "true";
+    }
+    update();
+  }
+
+  /* Save state */
+  function saveState() {
+    localStorage.setItem("workoutDone", done);
+    localStorage.setItem("workoutDate", new Date().toDateString());
+  }
+
+  function update() {
+    countEl.textContent = done ? "1/1" : "0/1";
+    fillBg.style.height = done ? "100%" : "0%";
+  }
+
+  function popCard() {
+    card.classList.add("pop");
+    setTimeout(() => card.classList.remove("pop"), 150);
+  }
+
+  function floatPlusOne(fromButton) {
+    const float = document.createElement("div");
+    float.textContent = "+1";
+    float.className = "float";
+
+    const rect = fromButton.getBoundingClientRect();
+    float.style.left = rect.left + rect.width / 2 + "px";
+    float.style.top = rect.top + rect.height / 2 + "px";
+
+    document.body.appendChild(float);
+    setTimeout(() => float.remove(), 800);
+  }
+
+  plus.onclick = () => {
+    if (!done) {
+      floatPlusOne(plus);
+      popCard();
+    }
+    done = true;
+    saveState();
+    update();
+  };
+
+  minus.onclick = () => {
+    done = false;
+    saveState();
+    update();
+  };
+
+  /* Midnight auto-reset checker */
+  setInterval(() => {
+    loadState();
+  }, 60 * 1000); // check every minute
+
+  /* Initial load */
+  loadState();
+</script>
+
+</body>
+</html>
