@@ -4,21 +4,20 @@
 <meta charset="UTF-8">
 <title>Exercise Daily Tracker</title>
 <style>
-  /* Remove all default spacing and background */
   html, body {
     margin: 0;
     padding: 0;
-    background: #1f1f1f;
+    background: #1f1f1f; /* match Notion dark mode */
     overflow: hidden;
     font-family: "Nunito", sans-serif;
   }
 
-  /* A wrapper that auto-sizes inside Notion */
   .wrapper {
+    background: #1f1f1f; /* ensure iframe background matches */
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 12px; /* prevents pulse from being cut off */
+    padding: 16px; /* gives room for pulse animation */
     box-sizing: border-box;
   }
 
@@ -33,10 +32,9 @@
     gap: 16px;
     box-shadow: 0 4px 0 #8b4513;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
-    overflow: hidden;
+    overflow: visible; /* allow pulse to expand */
   }
 
-  /* Smooth bottom-to-top fill */
   .fill-bg {
     position: absolute;
     left: 0;
@@ -49,7 +47,6 @@
     pointer-events: none;
   }
 
-  /* Pop animation */
   .card.pop {
     transform: scale(1.05);
     box-shadow: 0 6px 0 #8b4513;
@@ -99,7 +96,6 @@
     transform: scale(0.9);
   }
 
-  /* Floating +1 */
   .float {
     position: absolute;
     font-weight: 800;
@@ -144,11 +140,9 @@
 
   let done = false;
 
-  /* Restore state from localStorage */
   function loadState() {
     const saved = localStorage.getItem("workoutDone");
     const savedDate = localStorage.getItem("workoutDate");
-
     const today = new Date().toDateString();
 
     if (savedDate !== today) {
@@ -160,7 +154,6 @@
     update();
   }
 
-  /* Save state */
   function saveState() {
     localStorage.setItem("workoutDone", done);
     localStorage.setItem("workoutDate", new Date().toDateString());
@@ -205,7 +198,6 @@
     update();
   };
 
-  /* Midnight auto-reset checker */
   setInterval(() => {
     loadState();
   }, 60 * 1000);
