@@ -4,16 +4,22 @@
 <meta charset="UTF-8">
 <title>Exercise Daily Tracker</title>
 <style>
+  /* Remove all default spacing and background */
   html, body {
-    height: 100%;
     margin: 0;
     padding: 0;
     background: transparent;
     overflow: hidden;
     font-family: "Nunito", sans-serif;
+  }
+
+  /* A wrapper that auto-sizes inside Notion */
+  .wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 12px; /* prevents pulse from being cut off */
+    box-sizing: border-box;
   }
 
   .card {
@@ -111,19 +117,21 @@
 </head>
 <body>
 
-  <div class="card" id="card">
-    <div class="fill-bg" id="fillBg"></div>
+  <div class="wrapper">
+    <div class="card" id="card">
+      <div class="fill-bg" id="fillBg"></div>
 
-    <div class="icon">💪</div>
+      <div class="icon">💪</div>
 
-    <div class="text">
-      <div class="count" id="count">0/1</div>
-      <div class="label">Exercise daily</div>
-    </div>
+      <div class="text">
+        <div class="count" id="count">0/1</div>
+        <div class="label">Exercise daily</div>
+      </div>
 
-    <div class="buttons">
-      <button id="minus">−</button>
-      <button id="plus">+</button>
+      <div class="buttons">
+        <button id="minus">−</button>
+        <button id="plus">+</button>
+      </div>
     </div>
   </div>
 
@@ -144,7 +152,6 @@
     const today = new Date().toDateString();
 
     if (savedDate !== today) {
-      // New day → reset
       done = false;
       saveState();
     } else {
@@ -201,9 +208,8 @@
   /* Midnight auto-reset checker */
   setInterval(() => {
     loadState();
-  }, 60 * 1000); // check every minute
+  }, 60 * 1000);
 
-  /* Initial load */
   loadState();
 </script>
 
